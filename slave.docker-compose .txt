@@ -1,0 +1,24 @@
+version: "3.7"
+
+services:
+
+  node_exporter:
+    image: us.gcr.io/gcp101233-lv61301devops/646/monitoring/nodexporter:latest
+    container_name: node_exporter
+    restart: unless-stopped
+    ports:
+    - 5555:9100
+              
+  cadvisor:
+    image: us.gcr.io/gcp101233-lv61301devops/646/monitoring/cadvisor:latest
+    container_name: cadvisor
+    restart: unless-stopped
+    # expose:
+    # - 1234
+    ports:
+    - 1234:8080
+    volumes:
+    - /:/rootfs:ro
+    - /var/run:/var/run:rw
+    - /sys:/sys:ro
+    - /var/lib/docker/:/var/lib/docker:ro

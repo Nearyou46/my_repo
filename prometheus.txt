@@ -1,0 +1,21 @@
+global:
+  scrape_interval: 5s
+  external_labels:
+    monitor: 'node'
+scrape_configs:
+  - job_name: 'prometheus' 
+    static_configs: 
+      - targets: ['34.123.25.194:9090'] ## IP Address of the localhost
+  - job_name: 'node-exporter' 
+    static_configs: 
+      - targets: ['34.123.25.194:5555'] ## IP Address of the localhost
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['34.123.25.194:1234'] ## IP Address of the localhost
+
+  - job_name: 'node-exporter-slave' 
+    static_configs: 
+      - targets: ['34.71.163.121:5555'] ## IP Address of the localhost
+  - job_name: 'cadvisor-slave'
+    static_configs:
+      - targets: ['34.71.163.121:1234'] ## IP Address of the localhost
