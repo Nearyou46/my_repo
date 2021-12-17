@@ -1,0 +1,63 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: back-front
+  labels:
+    app : back-front
+spec:
+  selector:
+    matchLabels:
+      project: lv646
+  template:
+    metadata:
+      labels:
+        project: lv646   # Service will look for those PODS Labels!!!
+    spec:
+      containers:
+        - name : teachback
+          image: us.gcr.io/gcp101233-lv61301devops/app-images/teach_back-image:0.6
+          ports:
+            - containerPort: 8080
+        - name : teachfront
+          image: us.gcr.io/gcp101233-lv61301devops/app-images/teach_front-image:0.9
+          ports:
+            - containerPort: 3000
+
+---
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: my-autoscaling
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v2beta1v1
+    kind: Deployment
+    name: back-front
+  minReplicas: 3
+  maxReplicas: 4
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      targetAverageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      targetAverageUtilization: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: teach-ua
+  labels:
+     app: prod
+spec:
+  selector:
+    project: lv646      # Selecting PODs with those Labels
+  ports:
+    - name      : app-listener
+      protocol  : TCP
+      port      : 80  # Port on Load Balancer
+      targetPort: 3000  # Port on Pod
+  type: LoadBalancer
